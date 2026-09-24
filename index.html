@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="en-AU"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Australian NFP AI Tracker</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1d2b26;--mute:#5d6b65;--line:#e1ddd2;--acc:#0f6b4f;--acc2:#e8f3ee;--warn:#b45309;--warnbg:#fdf1e2}
+@media(prefers-color-scheme:dark){:root{--bg:#111a17;--card:#18231f;--ink:#e8efeb;--mute:#93a39b;--line:#2a3933;--acc:#4cc59b;--acc2:#1c3129;--warn:#f0b366;--warnbg:#33281a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,sans-serif}
+.w{max-width:1050px;margin:0 auto;padding:20px 16px 48px}h1{margin:0 0 4px}.s{color:var(--mute)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+input,select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px}#q{flex:1 1 220px}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.c{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}.c h3{margin:0}.o{color:var(--mute);font-size:.85rem;margin-bottom:6px}
+.t{display:inline-block;background:var(--acc2);color:var(--acc);border-radius:99px;padding:2px 9px;font-size:.75rem;margin:0 4px 4px 0}.t.w{background:var(--warnbg);color:var(--warn)}
+</style></head><body><div class="w">
+<h1>🇦🇺 Australian NFP AI Tracker</h1>
+<p class="s" id="meta">Loading…</p>
+<div class="bar"><input id="q" list="sl" type="search" placeholder="Type a sector, e.g. Mental Health…"><datalist id="sl"></datalist><select id="fs"></select><select id="ft"></select><select id="fu"></select></div>
+<div class="g" id="l"></div>
+<p class="s"><a id="sub" href="#">Submit an initiative</a></p></div>
+<script>
+let D=[];const repo=()=>{const u=location.hostname.split('.')[0],r=location.pathname.split('/')[1];return `https://github.com/${u}/${r}`};const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const opts=(id,lab,k)=>{$(id).innerHTML=`<option value="">${lab}</option>`+[...new Set(D.map(d=>d[k]).filter(Boolean))].sort().map(x=>`<option>${esc(x)}</option>`).join("")};
+function draw(){const q=$("#q").value.toLowerCase(),f={state:$("#fs").value,sector:$("#ft").value,use:$("#fu").value};
+const r=D.filter(d=>(!q||JSON.stringify(d).toLowerCase().includes(q))&&Object.keys(f).every(k=>!f[k]||d[k]===f[k]));
+$("#l").innerHTML=r.map(d=>`<div class="c"><h3>${esc(d.initiative)}</h3><div class="o">${esc(d.organisation)}</div><p>${esc(d.description)}</p>
+<span class="t">${esc(d.state)}</span><span class="t">${esc(d.sector)}</span><span class="t">${esc(d.tool)}</span><span class="t">${esc(d.status)}</span>
+${d.verified?'<span class="t">✓ verified</span>':'<span class="t w">auto-added</span>'} ${/^https?:/.test(d.source||"")?`<a href="${esc(d.source)}" target="_blank" rel="noopener">Source ↗</a>`:""}</div>`).join("")||`<p class="s">${D.length?`Nothing found for "${esc($("#q").value)}" yet. <a href="${repo()}/issues/new?title=${encodeURIComponent("Sector request: "+$("#q").value)}">Request this sector</a> and it will be added to the nightly crawl.`:"No initiatives yet — run the nightly workflow."}</p>`}
+fetch("data/initiatives.json").then(r=>r.json()).then(j=>{D=j.items||[];$("#meta").textContent=`${D.length} initiatives · updated ${j.updated||"never"}`;
+$("#sl").innerHTML=[...new Set(D.map(d=>d.sector).filter(Boolean))].sort().map(x=>`<option value="${esc(x)}">`).join("");opts("#fs","State","state");opts("#ft","Sector","sector");opts("#fu","Use case","use");draw()}).catch(()=>$("#meta").textContent="Could not load data.");
+document.addEventListener("input",draw);$("#sub").href=repo()+"/issues/new?template=submit-initiative.yml";
+</script></body></html>

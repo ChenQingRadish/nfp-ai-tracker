@@ -1,0 +1,5 @@
+# One RSS/Atom URL per line. Add Google Alerts feeds here (see README).
+# Examples of useful queries to turn into Google Alerts (deliver to "RSS feed"):
+#   charity AI Australia | "not-for-profit" "generative AI" | nonprofit Copilot Australia
+https://probonoaustralia.com.au/feed/
+https://www.themandarin.com.au/feed/

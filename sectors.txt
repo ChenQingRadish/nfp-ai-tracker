@@ -1,0 +1,15 @@
+# One sector per line. Each is searched nightly (Google News RSS, Australia).
+Mental Health
+Disability
+Aged Care
+Homelessness
+Food Security
+Environment
+Indigenous
+Youth
+Health
+Education
+Fundraising
+Animal Welfare
+Emergency Relief
+Arts and Culture
