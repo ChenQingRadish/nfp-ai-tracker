@@ -1,0 +1,16 @@
+name: Submit an AI initiative
+description: Suggest an Australian NFP AI initiative for the tracker
+labels: [submission]
+body:
+  - type: input
+    attributes: { label: Organisation }
+    validations: { required: true }
+  - type: input
+    attributes: { label: Initiative name }
+    validations: { required: true }
+  - type: textarea
+    attributes: { label: What is it and how is AI used? }
+    validations: { required: true }
+  - type: input
+    attributes: { label: Source URL (announcement, report, article) }
+    validations: { required: true }

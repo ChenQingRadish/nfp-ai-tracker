@@ -1,0 +1,29 @@
+name: nightly-update
+on:
+  schedule:
+    - cron: "0 16 * * *"   # 16:00 UTC = 2-3am Sydney
+  workflow_dispatch:        # run manually, optionally for one new sector
+    inputs:
+      sector:
+        description: "Optional: crawl just this sector now (e.g. Veterans)"
+        required: false
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - run: python scripts/update.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SECTOR: ${{ inputs.sector }}
+      - name: Commit changes
+        run: |
+          git config user.name "tracker-bot"
+          git config user.email "tracker-bot@users.noreply.github.com"
+          git add data
+          git diff --staged --quiet || (git commit -m "Nightly update" && git push)
